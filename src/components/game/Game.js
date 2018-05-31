@@ -1,50 +1,21 @@
 import React from 'react';
-import Square from './Square';
+import { connect } from "react-redux";
+
+//import Square from './Square';
 import Board from './Board';
 import calculateWinner from './calculateWinner';
+import { backGame } from '../../store/actions'; 
 
-export default class Game extends React.Component {
-	constructor (props) {
-		super(props);
-		this.state = {
-			history: [{
-				//squares: Array(9).fill(null)
-				squares: Array(9).fill(null).map((v, i) => i)
-			}],
-			xIsNext: true,
-			stepNumber: 0
-		};
-	}
-	
-	handleClick(i) {
-		//const history = this.state.history;
-		const history = this.state.history.slice(0, this.state.stepNumber + 1);
-		const current = history[history.length - 1];
-		const squares = current.squares.slice();
-		if (calculateWinner(squares) || squares[i] === 'X' || squares[i] === 'O') {
-		  return;
-		}
-		squares[i] = this.state.xIsNext ? 'X' : 'O';
-		this.setState({
-		  history: history.concat([{
-			squares: squares,
-		  }]),
-		  stepNumber: history.length,
-		  xIsNext: !this.state.xIsNext,
-		});		
-	}
+class ConnectedGame extends React.Component {
 
 	jumpTo(step) {
-		this.setState({
-			stepNumber: step,
-			xIsNext: (step % 2) === 0,
-		});
+		this.props.backGame(step);
 	}
 	
 	render() {
-		const history = this.state.history;
+		const history = this.props.history;
 		//const current = history[history.length - 1];
-		const current = history[this.state.stepNumber];
+		const current = history[this.props.stepNumber];
 		const winner = calculateWinner(current.squares);
 
 		const moves = history.map((step, move) => {
@@ -62,14 +33,15 @@ export default class Game extends React.Component {
 		if (winner) {
 		  status = 'Winner: ' + winner;
 		} else {
-		  status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+		  status = 'Next player: ' + (this.props.xIsNext ? 'X' : 'O');
 		}
 		return (
 			<div className="game">
 				<div className="game-board">
 					<Board
 						squares={current.squares}
-						onClick={(i) => this.handleClick(i)}
+						xIsNext={this.props.xIsNext}
+						winner={winner}
 					/>
 				</div>
 				<div className="game-info">
@@ -80,3 +52,21 @@ export default class Game extends React.Component {
 		);
 	}
 }
+
+// Generate dynamic state
+const mapStateToProps = state => {
+  return { 
+	history: state.game.history,
+	xIsNext: state.game.xIsNext,
+	stepNumber: state.game.stepNumber
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    backGame: value => dispatch(backGame(value))
+  };
+};
+
+const Game = connect(mapStateToProps, mapDispatchToProps)(ConnectedGame);
+
+export default Game;
