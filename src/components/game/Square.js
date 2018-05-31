@@ -1,27 +1,18 @@
 import React from 'react';
+//TODO - remove
 import { connect } from "react-redux";
+//TODO - remove
 import { stepGame } from "../../store/actions";
+/*
 class ConnectedSquare extends React.Component {
-//	constructor(props) {
-//		super(props);
-		//this.state = {
-		//	value: props.value
-		//};
-//	}
-	
+
 	cellClick(evt) {
-		//console.log('Click evt', evt);
+
 		if (this.props.stepGame) {
 			this.props.stepGame(this.props.index);
 		}
-		//if (this.props.onClick) {
-		//	this.props.onClick();
-		//} else {
-		//	console.log('Missing upstream click event!');
-		//}
-		//this.setState({value: 'X'});
 	}
-	
+
 	render() {
 		return (
 			<button className="square" onClick={(evt) => this.cellClick(evt)}>
@@ -38,4 +29,15 @@ const mapDispatchToProps = dispatch => {
 };
 
 const Square = connect(null, mapDispatchToProps)(ConnectedSquare);
+export default Square;
+*/
+
+const Square = ({idx, cellClick}) => {
+  return (
+  	<button className="square" onClick={() => cellClick(idx)}>
+		{idx}
+		</button>
+	);
+}
+
 export default Square;

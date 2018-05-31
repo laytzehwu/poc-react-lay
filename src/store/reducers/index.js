@@ -1,5 +1,5 @@
 import { ADD_ARTICLE, GAME_STEP, GAME_BACKWORD } from "../constants/action-types";
-import calculateWinner from '../../components/game/calculateWinner';
+import { calculateWinner } from '../../components/game/helpers';
 const initialState = {
   game: {
 	history: [{
@@ -27,6 +27,7 @@ const rootReducer = (state = initialState, action) => {
 			// Using concat(), slice(), and …spread for arrays
 			// Using Object.assign() and …spread for objects
 		case GAME_STEP:
+      console.log(state);
 			history = game.history.slice(0, game.stepNumber + 1);
 			const current = history[history.length - 1];
 			const squares = current.squares.slice();

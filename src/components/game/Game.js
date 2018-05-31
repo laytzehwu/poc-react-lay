@@ -1,22 +1,36 @@
 import React from 'react';
 import { connect } from "react-redux";
-
-//import Square from './Square';
+import { calculateWinner } from './helpers';
+import { backGame, stepGame } from '../../store/actions';
 import Board from './Board';
-import calculateWinner from './calculateWinner';
-import { backGame } from '../../store/actions'; 
+import Square from './Square';
 
 class ConnectedGame extends React.Component {
 
 	jumpTo(step) {
 		this.props.backGame(step);
 	}
-	
+
 	render() {
+
 		const history = this.props.history;
-		//const current = history[history.length - 1];
 		const current = history[this.props.stepNumber];
 		const winner = calculateWinner(current.squares);
+
+		const cellClick = (idx) => {
+		  this.props.stepGame(idx);
+		}
+
+    const squares = [0, 1, 2].map((x, i) => {
+		  const inc = (v) => v + (2 * i);
+			return (
+				<div className="board-row" key={x}>
+				  <Square idx={inc(x + 0)} cellClick={cellClick} />
+				  <Square idx={inc(x + 1)} cellClick={cellClick} />
+				  <Square idx={inc(x + 2)} cellClick={cellClick} />
+				</div>
+		  );
+		})
 
 		const moves = history.map((step, move) => {
 		  const desc = move ?
@@ -28,7 +42,7 @@ class ConnectedGame extends React.Component {
 			</li>
 		  );
 		});
-		
+
 		let status;
 		if (winner) {
 		  status = 'Winner: ' + winner;
@@ -38,11 +52,7 @@ class ConnectedGame extends React.Component {
 		return (
 			<div className="game">
 				<div className="game-board">
-					<Board
-						squares={current.squares}
-						xIsNext={this.props.xIsNext}
-						winner={winner}
-					/>
+				  <Board squares={squares}/>
 				</div>
 				<div className="game-info">
 					<div>{status}</div>
@@ -55,7 +65,7 @@ class ConnectedGame extends React.Component {
 
 // Generate dynamic state
 const mapStateToProps = state => {
-  return { 
+  return {
 	history: state.game.history,
 	xIsNext: state.game.xIsNext,
 	stepNumber: state.game.stepNumber
@@ -63,7 +73,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    backGame: value => dispatch(backGame(value))
+    backGame: value => dispatch(backGame(value)),
+    stepGame: idx => dispatch(stepGame(idx))
   };
 };
 
