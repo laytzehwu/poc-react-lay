@@ -12,25 +12,27 @@ class ConnectedGame extends React.Component {
 	}
 
 	render() {
-
 		const history = this.props.history;
 		const current = history[this.props.stepNumber];
 		const winner = calculateWinner(current.squares);
+		console.log(current.squares);
 
 		const cellClick = (idx) => {
 		  this.props.stepGame(idx);
 		}
 
-    const squares = [0, 1, 2].map((x, i) => {
-		  const inc = (v) => v + (2 * i);
-			return (
-				<div className="board-row" key={x}>
-				  <Square idx={inc(x + 0)} cellClick={cellClick} />
-				  <Square idx={inc(x + 1)} cellClick={cellClick} />
-				  <Square idx={inc(x + 2)} cellClick={cellClick} />
-				</div>
-		  );
-		})
+		const squares = [0,3,6].map((x) => {
+		      return current.squares.slice(x, x+3);
+		    }).map((row, i) => {
+					return (
+						<div className="board-row" key={i}>
+					    {row.map((x) => (
+								<Square value={x} cellClick={cellClick} />
+							))}
+						</div>
+				  );
+		   });
+
 
 		const moves = history.map((step, move) => {
 		  const desc = move ?

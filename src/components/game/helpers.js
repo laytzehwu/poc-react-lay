@@ -1,4 +1,3 @@
-
 exports.calculateWinner = (squares) => {
 
   const lines = [
