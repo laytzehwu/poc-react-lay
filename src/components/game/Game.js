@@ -3,13 +3,22 @@ import { connect } from "react-redux";
 
 //import Square from './Square';
 import Board from './Board';
-import calculateWinner from './calculateWinner';
-import { backGame } from '../../store/actions'; 
+import { calculateWinner } from './utl';
+import { backGame, stepGame } from '../../store/actions'; 
 
 class ConnectedGame extends React.Component {
 
+	constructor(props) {
+		super(props);
+		this.stepGame = this.stepGame.bind(this);
+	}
+	
 	jumpTo(step) {
 		this.props.backGame(step);
+	}
+	
+	stepGame(input) {
+		this.props.stepGame(input);
 	}
 	
 	render() {
@@ -63,7 +72,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    backGame: value => dispatch(backGame(value))
+    backGame: value => dispatch(backGame(value)),
+	stepGame: value => dispatch(stepGame(value))
   };
 };
 

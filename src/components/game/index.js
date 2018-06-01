@@ -1,5 +1,5 @@
 import Square from './Square';
 import Board from './Board';
 import Game from './Game';
-import calculateWinner from './calculateWinner';
-export {Square, Board, Game, calculateWinner};
+import utl from './utl';
+export {Square, Board, Game, utl};
