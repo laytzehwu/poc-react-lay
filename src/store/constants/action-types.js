@@ -1,4 +1,2 @@
-export const ADD_ARTICLE = "ADD_ARTICLE";
-export const GAME_STEP = "GAME_STEP";
-export const GAME_BACKWORD = "GAME_BACKWORD";
-export const ADD_GAME_HISTORY = "ADD_GAME_HISTORY";
+export const MAKE_A_MOVE = "MAKE_A_MOVE";
+export const REVERT_STEP = "REVERT_STEP";

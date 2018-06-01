@@ -1,24 +1,28 @@
 import React from 'react';
 import { connect } from "react-redux";
-import { calculateWinner } from './helpers';
-import { backGame, stepGame } from '../../store/actions';
+import { calculateWinner, calcBackward, calcMovement } from './helpers';
+import { revertStep, makeAMove } from '../../store/actions';
 import Board from './Board';
 import Square from './Square';
 
 class ConnectedGame extends React.Component {
 
-	jumpTo(step) {
-		this.props.backGame(step);
-	}
 
 	render() {
-		const history = this.props.history;
-		const current = history[this.props.stepNumber];
-		const winner = calculateWinner(current.squares);
-		console.log(current.squares);
 
-		const cellClick = (idx) => {
-		  this.props.stepGame(idx);
+		const { history, stepNumber, xIsNext } = this.props;
+		const current = history[stepNumber];
+		const winner = calculateWinner(current.squares);
+
+		const cellClick = (step) => {
+			const payload = calcMovement(step, history, stepNumber, xIsNext);
+		  this.props.makeAMove(step, payload);
+		}
+
+		const jumpTo = (step) => {
+			const { history } = this.props;
+			const payload = calcBackward(step, history);
+			this.props.revertStep(step, payload);
 		}
 
 		const squares = [0,3,6].map((x) => {
@@ -40,7 +44,7 @@ class ConnectedGame extends React.Component {
 			'Go to game start';
 		  return (
 			<li key={move}>
-			  <button onClick={() => this.jumpTo(move)}>{desc}</button>
+			  <button onClick={() => jumpTo(move)}>{desc}</button>
 			</li>
 		  );
 		});
@@ -65,18 +69,18 @@ class ConnectedGame extends React.Component {
 	}
 }
 
-// Generate dynamic state
 const mapStateToProps = state => {
   return {
-	history: state.game.history,
-	xIsNext: state.game.xIsNext,
-	stepNumber: state.game.stepNumber
+		history: state.game.history,
+		xIsNext: state.game.xIsNext,
+		stepNumber: state.game.stepNumber
   };
 };
+
 const mapDispatchToProps = dispatch => {
   return {
-    backGame: value => dispatch(backGame(value)),
-    stepGame: idx => dispatch(stepGame(idx))
+    revertStep: (value, payload) => dispatch(revertStep(value, payload)),
+    makeAMove: (step, payload) => dispatch(makeAMove(step, payload))
   };
 };
 

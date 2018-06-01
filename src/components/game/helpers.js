@@ -1,4 +1,4 @@
-exports.calculateWinner = (squares) => {
+const calculateWinner = (squares) => {
 
   const lines = [
       [0, 1, 2],
@@ -20,4 +20,38 @@ exports.calculateWinner = (squares) => {
 		}
 	}
 	return null;
+}
+
+exports.calculateWinner = calculateWinner;
+
+exports.calcBackward = (step, history) => {
+  return {
+    history: history.slice(),
+    xIsNext: (step % 2) === 0,
+    stepNumber: step
+  }
+}
+
+exports.calcMovement = (step, history, stepNumber, xIsNext) => {
+    const hist = history.slice(0, stepNumber + 1);
+    const current = hist[hist.length - 1];
+    const squares = current.squares.slice();
+    const preVal = squares[step];
+    if (!calculateWinner(squares) && preVal !== 'X' && preVal !== 'O') {
+      squares[step] = xIsNext ? 'X' : 'O';
+      hist.push({squares});
+
+      return {
+        history: hist,
+        xIsNext: !xIsNext,
+        stepNumber: stepNumber+1
+      }
+    }
+
+    return {
+      hist,
+      xIsNext,
+      stepNumber
+    }
+
 }

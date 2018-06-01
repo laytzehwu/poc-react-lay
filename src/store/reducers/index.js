@@ -1,5 +1,5 @@
-import { ADD_ARTICLE, GAME_STEP, GAME_BACKWORD } from "../constants/action-types";
-import { calculateWinner } from '../../components/game/helpers';
+import { MAKE_A_MOVE, REVERT_STEP } from "../constants/action-types";
+
 const initialState = {
   game: {
 	history: [{
@@ -12,38 +12,29 @@ const initialState = {
 };
 
 const rootReducer = (state = initialState, action) => {
-	const game = state.game;
-	let history, xIsNext, stepNumber;
 	switch (action.type) {
-		case ADD_ARTICLE:
-			return { ...state, articles: [...state.articles, action.payload] };
-		case GAME_STEP:
-			history = game.history.slice(0, game.stepNumber + 1);
-			const current = history[history.length - 1];
-			const squares = current.squares.slice();
-			const preVal = squares[action.index];
-			xIsNext = game.xIsNext;
-			stepNumber = game.stepNumber;
-			if (!calculateWinner(squares) && preVal !== 'X' && preVal !== 'O') {
-				xIsNext = !game.xIsNext;
-				stepNumber ++;
-				squares[action.index] = game.xIsNext ? 'X' : 'O';
-				history.push({squares});
-			}
-			return { ...state, game: {
-				history: history,
-				xIsNext: xIsNext,
-				stepNumber: stepNumber
-			} };
-		case GAME_BACKWORD:
-			history = game.history.slice();
-			xIsNext = (action.index % 2) === 0;
-			stepNumber = action.index;
-			return { ...state, game: {
-				history: history,
-				xIsNext: xIsNext,
-				stepNumber: stepNumber
-			} };
+		case MAKE_A_MOVE: {
+      const { history, xIsNext, stepNumber } = action.payload;
+			return {
+        ...state,
+        game: {
+  				history,
+  				xIsNext,
+  				stepNumber
+			  }
+      };
+    }
+		case REVERT_STEP: {
+      const { history, xIsNext, stepNumber } = action.payload;
+			return {
+        ...state,
+        game: {
+  				history,
+  				xIsNext,
+  				stepNumber
+			  }
+      };
+    }
 		default:
 			return state;
 	}
