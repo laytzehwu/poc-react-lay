@@ -1,7 +1,5 @@
 import React from 'react';
-import { connect } from "react-redux";
-import { stepGame } from "../../store/actions";
-class ConnectedSquare extends React.Component {
+class Square extends React.Component {
 //	constructor(props) {
 //		super(props);
 		//this.state = {
@@ -10,15 +8,10 @@ class ConnectedSquare extends React.Component {
 //	}
 	
 	cellClick(evt) {
-		//console.log('Click evt', evt);
-		if (this.props.stepGame) {
-			this.props.stepGame(this.props.index);
+		// clickHandler is injected by HOC
+		if (this.props.clickHandler) {
+			this.props.clickHandler(this.props.index);
 		}
-		//if (this.props.onClick) {
-		//	this.props.onClick();
-		//} else {
-		//	console.log('Missing upstream click event!');
-		//}
 		//this.setState({value: 'X'});
 	}
 	
@@ -31,11 +24,4 @@ class ConnectedSquare extends React.Component {
 	}
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    stepGame: value => dispatch(stepGame(value))
-  };
-};
-
-const Square = connect(null, mapDispatchToProps)(ConnectedSquare);
 export default Square;

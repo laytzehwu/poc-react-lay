@@ -1,3 +1,5 @@
+import React from 'react';
+
 const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -24,7 +26,7 @@ export const calculateWinner = (squares) => {
 export const makeGameState = () => {
 	return {
 	history: [{
-		squares: Array(9).fill(null).map((v, i) => i)
+		squares: Array(9).fill(null).map((v, i) => i + 1)
 	}],
 	xIsNext: true,
 	stepNumber: 0
@@ -67,4 +69,18 @@ export const backGameHandler = (state, action) => {
 	} };
 }
 
-export default { calculateWinner, makeGameState, stepGameHandler, backGameHandler };
+export const injectClickHandler = (WrappedComponent, handler) => {
+	return class extends React.Component {
+		constructor(props) {
+			super(props);
+			this.state = {
+				clickHandler: handler
+			}
+		}
+		render () {
+			return <WrappedComponent clickHandler={this.state.clickHandler} {...this.props} />;
+		}
+	}
+}
+
+export default { calculateWinner, makeGameState, stepGameHandler, backGameHandler, injectClickHandler };

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 //import Square from './Square';
 import Board from './Board';
-import { calculateWinner } from './utl';
+import utl from './utl';
 import { backGame, stepGame } from '../../store/actions'; 
 
 class ConnectedGame extends React.Component {
@@ -25,7 +25,7 @@ class ConnectedGame extends React.Component {
 		const history = this.props.history;
 		//const current = history[history.length - 1];
 		const current = history[this.props.stepNumber];
-		const winner = calculateWinner(current.squares);
+		const winner = utl.calculateWinner(current.squares);
 
 		const moves = history.map((step, move) => {
 		  const desc = move ?
@@ -48,6 +48,7 @@ class ConnectedGame extends React.Component {
 			<div className="game">
 				<div className="game-board">
 					<Board
+						stepGame={this.stepGame}
 						squares={current.squares}
 						xIsNext={this.props.xIsNext}
 						winner={winner}
@@ -72,6 +73,7 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
+	dispatch,  
     backGame: value => dispatch(backGame(value)),
 	stepGame: value => dispatch(stepGame(value))
   };
