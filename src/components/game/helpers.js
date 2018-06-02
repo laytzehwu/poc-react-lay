@@ -53,5 +53,15 @@ exports.calcMovement = (step, history, stepNumber, xIsNext) => {
       xIsNext,
       stepNumber
     }
+}
 
+exports.winningMessage = (winner, xIsNext) => {
+
+  const XorO = xIsNext ? 'X' : 'O' ;
+
+  if (winner) {
+    return `Winner: ${winner}`
+  } else {
+    return `Next player: ${XorO}`
+  }
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Board = ({squares}) => {
+const DumpBoard = ({squares}) => {
 	return (
 		<div>{squares}</div>
 	)
 }
 
-export default Board;
+export default DumpBoard;
