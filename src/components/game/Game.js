@@ -1,61 +1,61 @@
 import React from 'react';
 import { connect } from "react-redux";
+import {
+	calculateWinner,
+	calcBackward,
+	calcMovement,
+	winningMessage
+} from './helpers';
+import { revertStep, makeAMove } from '../../store/actions';
+import DumpBoard from './Board';
+import Square from './Square';
 
-//import Square from './Square';
-import Board from './Board';
-import utl from './utl';
-import { backGame, stepGame } from '../../store/actions'; 
+class DumpGame extends React.Component {
 
-class ConnectedGame extends React.Component {
-
-	constructor(props) {
-		super(props);
-		this.stepGame = this.stepGame.bind(this);
-	}
-	
-	jumpTo(step) {
-		this.props.backGame(step);
-	}
-	
-	stepGame(input) {
-		this.props.stepGame(input);
-	}
-	
 	render() {
-		const history = this.props.history;
-		//const current = history[history.length - 1];
-		const current = history[this.props.stepNumber];
-		const winner = utl.calculateWinner(current.squares);
 
+		const { history, stepNumber, xIsNext } = this.props;
+		const current = history[stepNumber];
+		const winner = calculateWinner(current.squares);
+		const cellClick = (step) => {
+			const payload = calcMovement(step, history, stepNumber, xIsNext);
+			this.props.makeAMove(step, payload);
+		}
+		const jumpTo = (step) => {
+			const { history } = this.props;
+			const payload = calcBackward(step, history);
+			this.props.revertStep(step, payload);
+		}
+		const squares = [0,3,6].map((x) => {
+		      return current.squares.slice(x, x+3);
+		    }).map((row, i) => {
+					return (
+						<div className="board-row" key={i}>
+					    {row.map((x) => (
+								<Square value={x} cellClick={cellClick} />
+							))}
+						</div>
+				  );
+		   });
+		const Board = () => (<DumpBoard squares={squares}/>);
 		const moves = history.map((step, move) => {
 		  const desc = move ?
 			'Go to move #' + move :
 			'Go to game start';
 		  return (
-			<li key={move}>
-			  <button onClick={() => this.jumpTo(move)}>{desc}</button>
-			</li>
+				<li key={move}>
+				  <button onClick={() => jumpTo(move)}>{desc}</button>
+				</li>
 		  );
 		});
-		
-		let status;
-		if (winner) {
-		  status = 'Winner: ' + winner;
-		} else {
-		  status = 'Next player: ' + (this.props.xIsNext ? 'X' : 'O');
-		}
+
 		return (
 			<div className="game">
 				<div className="game-board">
-					<Board
-						stepGame={this.stepGame}
-						squares={current.squares}
-						xIsNext={this.props.xIsNext}
-						winner={winner}
-					/>
+				  <Board />
 				</div>
 				<div className="game-info">
-					<div>{status}</div>
+					<div>{winningMessage(winner, xIsNext)}</div>
 					<ol>{moves}</ol>
 				</div>
 			</div>
@@ -63,22 +63,21 @@ class ConnectedGame extends React.Component {
 	}
 }
 
-// Generate dynamic state
 const mapStateToProps = state => {
-  return { 
-	history: state.game.history,
-	xIsNext: state.game.xIsNext,
-	stepNumber: state.game.stepNumber
-  };
-};
-const mapDispatchToProps = dispatch => {
   return {
-	dispatch,  
-    backGame: value => dispatch(backGame(value)),
-	stepGame: value => dispatch(stepGame(value))
+		history: state.game.history,
+		xIsNext: state.game.xIsNext,
+		stepNumber: state.game.stepNumber
   };
 };
 
-const Game = connect(mapStateToProps, mapDispatchToProps)(ConnectedGame);
+const mapDispatchToProps = dispatch => {
+  return {
+    revertStep: (value, payload) => dispatch(revertStep(value, payload)),
+    makeAMove: (step, payload) => dispatch(makeAMove(step, payload))
+  };
+};
+
+const Game = connect(mapStateToProps, mapDispatchToProps)(DumpGame);
 
 export default Game;
