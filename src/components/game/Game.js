@@ -19,7 +19,7 @@ class DumpGame extends React.Component {
 		const winner = calculateWinner(current.squares);
 		const cellClick = (step) => {
 			const payload = calcMovement(step, history, stepNumber, xIsNext);
-		  this.props.makeAMove(step, payload);
+			this.props.makeAMove(step, payload);
 		}
 		const jumpTo = (step) => {
 			const { history } = this.props;
@@ -37,7 +37,7 @@ class DumpGame extends React.Component {
 						</div>
 				  );
 		   });
-    const Board = () => (<DumpBoard squares={squares}/>);
+		const Board = () => (<DumpBoard squares={squares}/>);
 		const moves = history.map((step, move) => {
 		  const desc = move ?
 			'Go to move #' + move :

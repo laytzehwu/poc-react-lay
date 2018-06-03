@@ -1,5 +1,4 @@
 import React from 'react';
-
 const Square = ({value, cellClick}) => {
   return (
   	<button className="square" onClick={() => cellClick(value)}>
@@ -7,5 +6,4 @@ const Square = ({value, cellClick}) => {
 		</button>
 	);
 }
-
 export default Square;
