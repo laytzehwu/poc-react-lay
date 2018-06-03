@@ -47,9 +47,9 @@ exports.calcMovement = (step, history, stepNumber, xIsNext) => {
         stepNumber: stepNumber+1
       }
     }
-
+	console.log(hist);
     return {
-      hist,
+      history: hist,
       xIsNext,
       stepNumber
     }
